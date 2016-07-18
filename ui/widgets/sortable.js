@@ -945,7 +945,9 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 	_createTrPlaceholder: function( sourceTr, targetTr ) {
 		var that = this;
 
-		sourceTr.children().each( function() {
+		// Adapted by Tim Vasil to added filter to this call so that the
+		// sortable placeholder only counts visible columns, not invisible ones.
+		sourceTr.children().filter( ":visible" ).each( function() {
 			$( "<td>&#160;</td>", that.document[ 0 ] )
 				.attr( "colspan", $( this ).attr( "colspan" ) || 1 )
 				.appendTo( targetTr );

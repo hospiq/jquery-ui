@@ -161,6 +161,10 @@ $.widget( "ui.draggable", $.ui.mouse, {
 
 	_mouseStart: function( event ) {
 
+		// Adapted by Tim Vasil to add "prestart" event to draggable
+		// so that containment can be set dynamically.
+        this._trigger( "prestart", event );
+
 		var o = this.options;
 
 		//Create and append the visible helper

@@ -1851,8 +1851,9 @@ $.extend( Datepicker.prototype, {
 			monthHtml = "";
 
 		// Month selection
+		// Adapted by Tim Vasil to include "form-control" class on month picker for Bootstrap styling
 		if ( secondary || !changeMonth ) {
-			monthHtml += "<span class='ui-datepicker-month'>" + monthNames[ drawMonth ] + "</span>";
+			monthHtml += "<span class='ui-datepicker-month form-control'>" + monthNames[ drawMonth ] + "</span>";
 		} else {
 			inMinYear = ( minDate && minDate.getFullYear() === drawYear );
 			inMaxYear = ( maxDate && maxDate.getFullYear() === drawYear );
@@ -1872,10 +1873,11 @@ $.extend( Datepicker.prototype, {
 		}
 
 		// Year selection
+		// Adapted by Tim Vasil to include "form-control" class on year picker for Bootstrap styling
 		if ( !inst.yearshtml ) {
 			inst.yearshtml = "";
 			if ( secondary || !changeYear ) {
-				html += "<span class='ui-datepicker-year'>" + drawYear + "</span>";
+				html += "<span class='ui-datepicker-year form-control'>" + drawYear + "</span>";
 			} else {
 
 				// determine range of years to display
@@ -1891,7 +1893,7 @@ $.extend( Datepicker.prototype, {
 				endYear = Math.max( year, determineYear( years[ 1 ] || "" ) );
 				year = ( minDate ? Math.max( year, minDate.getFullYear() ) : year );
 				endYear = ( maxDate ? Math.min( endYear, maxDate.getFullYear() ) : endYear );
-				inst.yearshtml += "<select class='ui-datepicker-year' data-handler='selectYear' data-event='change'>";
+				inst.yearshtml += "<select class='ui-datepicker-year form-control' data-handler='selectYear' data-event='change'>";
 				for ( ; year <= endYear; year++ ) {
 					inst.yearshtml += "<option value='" + year + "'" +
 						( year === drawYear ? " selected='selected'" : "" ) +
