@@ -94,14 +94,6 @@ var
 				"dist/jquery-ui.min.js": "dist/jquery-ui.js"
 			}
 		},
-		hospiq: {
-			options: {
-				banner: createBanner( uiFiles )
-			},
-			files: {
-				"dist/jquery.ui-custom.min.js": "dist/jquery.ui.hospiq.js"
-			}
-		},
 		i18n: {
 			options: {
 				banner: createBanner( allI18nFiles )
@@ -162,7 +154,6 @@ uiFiles.forEach(function( file ) {
 // grunt plugins
 require( "load-grunt-tasks" )( grunt );
 // local testswarm and build tasks
-grunt.loadNpmTasks('grunt-contrib-cssmin');
 grunt.loadTasks( "build/tasks" );
 
 function stripDirectory( file ) {
@@ -205,19 +196,8 @@ grunt.initConfig({
 				}
 			},
 			src: hospIQCssFiles,
-			dest: "dist/jquery.ui.hospiq.css"
+			dest: "dist/jquery.ui.css"
 		}
-	},
-	cssmin: {
-	  options: {
-	    shorthandCompacting: false,
-	    roundingPrecision: -1
-	  },
-	  target: {
-	    files: {
-	      'dist/jquery.ui.css': ['dist/jquery.ui.hospiq.css']
-	    }
-	  }
 	},
 	requirejs: {
 		js: {
@@ -269,7 +249,7 @@ grunt.initConfig({
 				skipModuleInsertion: true,
 				exclude: [ "jquery" ],
 				include: expandFiles( hospIQBundle ),
-				out: "dist/jquery.ui.hospiq.js",
+				out: "dist/jquery.ui-custom.js",
 				wrap: {
 					start: createBanner( uiFiles ),
 				}
@@ -567,6 +547,6 @@ grunt.registerTask( "test", [ "qunit" ]);
 grunt.registerTask( "sizer", [ "requirejs:js", "uglify:main", "compare_size:all" ]);
 grunt.registerTask( "sizer_all", [ "requirejs:js", "uglify", "compare_size" ]);
 
-grunt.registerTask( "hospiq", [ "concat:hospiq", "cssmin", "requirejs:hospiq", "uglify:hospiq"]);
+grunt.registerTask( "hospiq", [ "concat:hospiq", "requirejs:hospiq"]);
 
 };
