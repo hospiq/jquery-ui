@@ -1857,7 +1857,7 @@ $.extend( Datepicker.prototype, {
 		} else {
 			inMinYear = ( minDate && minDate.getFullYear() === drawYear );
 			inMaxYear = ( maxDate && maxDate.getFullYear() === drawYear );
-			monthHtml += "<select class='ui-datepicker-month' data-handler='selectMonth' data-event='change'>";
+			monthHtml += "<select class='ui-datepicker-month form-control' data-handler='selectMonth' data-event='change'>";
 			for ( month = 0; month < 12; month++ ) {
 				if ( ( !inMinYear || month >= minDate.getMonth() ) && ( !inMaxYear || month <= maxDate.getMonth() ) ) {
 					monthHtml += "<option value='" + month + "'" +
