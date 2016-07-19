@@ -3,6 +3,38 @@ module.exports = function( grunt ) {
 "use strict";
 
 var
+	hospIQBundle = [
+		"ui/**/*.js",
+		"!ui/core.js",
+		"!ui/i18n/*",
+
+		// Unused widgets:
+		"!ui/widgets/accordion.js",
+		"!ui/widgets/autocomplete.js",
+		"!ui/widgets/button.js",
+		"!ui/widgets/checkboxradio.js",
+		"!ui/widgets/controlgroup.js",
+		"!ui/widgets/dialog.js",
+		"!ui/widgets/menu.js",
+		"!ui/widgets/progressbar.js",
+		"!ui/widgets/selectmenu.js",
+		"!ui/widgets/slider.js",
+		"!ui/widgets/spinner.js",
+		"!ui/widgets/tabs.js",
+		"!ui/widgets/tooltip.js"
+	],
+
+	hospIQCssFiles = [
+		"core",
+		"datepicker",
+		"draggable",
+		"resizable",
+		"selectable",
+		"sortable"
+	].map(function( component ) {
+		return "themes/base/" + component + ".css";
+	}),
+
 	// files
 	coreFiles = [
 		"core.js",
@@ -62,6 +94,14 @@ var
 				"dist/jquery-ui.min.js": "dist/jquery-ui.js"
 			}
 		},
+		hospiq: {
+			options: {
+				banner: createBanner( uiFiles )
+			},
+			files: {
+				"dist/jquery.ui-custom.min.js": "dist/jquery-ui.hospiq.js"
+			}
+		},
 		i18n: {
 			options: {
 				banner: createBanner( allI18nFiles )
@@ -94,6 +134,13 @@ function mapMinFile( file ) {
 function expandFiles( files ) {
 	return grunt.util._.pluck( grunt.file.expandMapping( files ), "src" ).map(function( values ) {
 		return values[ 0 ];
+	});
+}
+
+
+function camelCase( input ) {
+	return input.toLowerCase().replace( /[-/](.)/g, function( match, group1 ) {
+		return group1.toUpperCase();
 	});
 }
 
@@ -148,6 +195,16 @@ grunt.initConfig({
 			},
 			src: cssFiles,
 			dest: "dist/jquery-ui.css"
+		},
+		hospiq: {
+			options: {
+				banner: createBanner( hospIQCssFiles ),
+				stripBanners: {
+					block: true
+				}
+			},
+			src: hospIQCssFiles,
+			dest: "dist/jquery.ui.hospiq.css"
 		}
 	},
 	requirejs: {
@@ -165,6 +222,42 @@ grunt.initConfig({
 				exclude: [ "jquery" ],
 				include: expandFiles( [ "ui/**/*.js", "!ui/core.js", "!ui/i18n/*" ] ),
 				out: "dist/jquery-ui.js",
+				wrap: {
+					start: createBanner( uiFiles ),
+				}
+			}
+		},
+		hospiq: {
+			options: {
+				baseUrl: "./",
+				paths: {
+					jquery: "./external/jquery/jquery",
+					external: "./external/"
+				},
+				onBuildWrite: function ( id, path, contents ) {
+					var name;
+
+					if ( id === "jquery" ) {
+						return contents;
+					}
+
+					name = camelCase( id.replace( /ui\//, "" ).replace( /\.js$/, "" ) );
+					return contents
+
+						// Remove UMD wrapper.
+						.replace( /\( ?function\( factory[\s\S]*?\( ?function\( [^\)]* \) \{/, "" )
+						.replace( /\} ?\) ?\);\s*?$/, "" )
+
+						// Replace return exports for var =.
+						.replace( /\nreturn/, "\nvar " + name + " =" );
+				},
+				preserveLicenseComments: false,
+				optimize: "none",
+				findNestedDependencies: true,
+				skipModuleInsertion: true,
+				exclude: [ "jquery" ],
+				include: expandFiles( hospIQBundle ),
+				out: "dist/jquery.ui.hospiq.js",
 				wrap: {
 					start: createBanner( uiFiles ),
 				}
@@ -456,10 +549,12 @@ grunt.registerTask( "update-authors", function() {
 });
 
 grunt.registerTask( "default", [ "lint", "requirejs", "test" ]);
-grunt.registerTask( "jenkins", [ "default", "concat" ]);
+grunt.registerTask( "jenkins", [ "default", "concat:css" ]);
 grunt.registerTask( "lint", [ "asciilint", "jshint", "jscs", "csslint", "htmllint" ]);
 grunt.registerTask( "test", [ "qunit" ]);
 grunt.registerTask( "sizer", [ "requirejs:js", "uglify:main", "compare_size:all" ]);
 grunt.registerTask( "sizer_all", [ "requirejs:js", "uglify", "compare_size" ]);
+
+grunt.registerTask( "hospiq", [ "concat:hospiq", "requirejs:hospiq", "uglify:hospiq"]);
 
 };
