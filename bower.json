@@ -1,5 +1,9 @@
 {
-	"name": "jquery-ui",
+	"name": "hospiq-jquery-ui",
+	"main": [
+		"dist/jquery.ui-custom.js",
+		"dist/jquery.ui.css"
+	],
 	"ignore": [
 		"**/.*",
 		"build",
