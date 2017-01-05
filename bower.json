@@ -11,6 +11,7 @@
 		"external",
 		"tests"
 	],
+	"license": "MIT",
 	"dependencies": {
 		"jquery": ">=1.6"
 	},
@@ -60,7 +61,8 @@
 		"jquery-2.2.3": "jquery#2.2.3",
 		"jquery-2.2.4": "jquery#2.2.4",
 		"jquery-3.0.0": "jquery#3.0.0",
-		"jquery-3.1.0": "jquery#3.1.0"
+		"jquery-3.1.0": "jquery#3.1.0",
+		"jquery-3.1.1": "jquery#3.1.1"
 	},
-	"version": "1.12.0"
+	"version": "1.12.1"
 }
