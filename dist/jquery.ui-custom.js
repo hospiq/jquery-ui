@@ -1,6 +1,6 @@
-/*! jQuery UI - v1.12.0 - 2016-09-13
+/*! jQuery UI - v1.12.2-pre - 2017-01-04
 * http://jqueryui.com
-* Includes: core.js, widget.js, mouse.js, draggable.js, droppable.js, resizable.js, selectable.js, sortable.js, effect.js, data.js, disable-selection.js, escape-selector.js, focusable.js, form-reset-mixin.js, form.js, ie.js, jquery-1-7.js, keycode.js, labels.js, plugin.js, position.js, safe-active-element.js, safe-blur.js, scroll-parent.js, tabbable.js, unique-id.js, version.js
+* Includes: core.js, widget.js, mouse.js, draggable.js, droppable.js, resizable.js, selectable.js, sortable.js, effect.js, data.js, disable-selection.js, effect-blind.js, effect-bounce.js, effect-clip.js, effect-drop.js, effect-explode.js, effect-fade.js, effect-fold.js, effect-highlight.js, effect-puff.js, effect-pulsate.js, effect-scale.js, effect-shake.js, effect-size.js, effect-slide.js, effect-transfer.js, escape-selector.js, focusable.js, form-reset-mixin.js, form.js, datepicker-af.js, datepicker-ar-DZ.js, datepicker-ar.js, datepicker-az.js, datepicker-be.js, datepicker-bg.js, datepicker-bs.js, datepicker-ca.js, datepicker-cs.js, datepicker-cy-GB.js, datepicker-da.js, datepicker-de.js, datepicker-el.js, datepicker-en-AU.js, datepicker-en-GB.js, datepicker-en-NZ.js, datepicker-eo.js, datepicker-es.js, datepicker-et.js, datepicker-eu.js, datepicker-fa.js, datepicker-fi.js, datepicker-fo.js, datepicker-fr-CA.js, datepicker-fr-CH.js, datepicker-fr.js, datepicker-gl.js, datepicker-he.js, datepicker-hi.js, datepicker-hr.js, datepicker-hu.js, datepicker-hy.js, datepicker-id.js, datepicker-is.js, datepicker-it-CH.js, datepicker-it.js, datepicker-ja.js, datepicker-ka.js, datepicker-kk.js, datepicker-km.js, datepicker-ko.js, datepicker-ky.js, datepicker-lb.js, datepicker-lt.js, datepicker-lv.js, datepicker-mk.js, datepicker-ml.js, datepicker-ms.js, datepicker-nb.js, datepicker-nl-BE.js, datepicker-nl.js, datepicker-nn.js, datepicker-no.js, datepicker-pl.js, datepicker-pt-BR.js, datepicker-pt.js, datepicker-rm.js, datepicker-ro.js, datepicker-ru.js, datepicker-sk.js, datepicker-sl.js, datepicker-sq.js, datepicker-sr-SR.js, datepicker-sr.js, datepicker-sv.js, datepicker-ta.js, datepicker-th.js, datepicker-tj.js, datepicker-tr.js, datepicker-uk.js, datepicker-vi.js, datepicker-zh-CN.js, datepicker-zh-HK.js, datepicker-zh-TW.js, ie.js, jquery-1-7.js, keycode.js, labels.js, plugin.js, position.js, safe-active-element.js, safe-blur.js, scroll-parent.js, tabbable.js, unique-id.js, version.js, accordion.js, autocomplete.js, button.js, checkboxradio.js, controlgroup.js, datepicker.js, dialog.js, menu.js, progressbar.js, selectmenu.js, slider.js, spinner.js, tabs.js, tooltip.js
 * Copyright jQuery Foundation and other contributors; Licensed  */
 
 
@@ -1425,7 +1425,7 @@ $.fn.extend( {
 				var el = $( this ),
 					normalizedMode = $.effects.mode( el, mode ) || defaultMode;
 
-				// Sentinel for duck-punching the :animated psuedo-selector
+				// Sentinel for duck-punching the :animated pseudo-selector
 				el.data( dataSpaceAnimated, true );
 
 				// Save effect mode for later use,
@@ -2738,7 +2738,7 @@ var focusable = $.ui.focusable;
 // Support: IE8 Only
 // IE8 does not support the form attribute and when it is supplied. It overwrites the form prop
 // with a string, so we need to find the proper form.
-var form = $.fn.form = function() {
+var form = $.fn._form = function() {
 	return typeof this[ 0 ].form === "string" ? this.closest( "form" ) : $( this[ 0 ].form );
 };
 
@@ -2773,7 +2773,7 @@ var formResetMixin = $.ui.formResetMixin = {
 	},
 
 	_bindFormResetHandler: function() {
-		this.form = this.element.form();
+		this.form = this.element._form();
 		if ( !this.form.length ) {
 			return;
 		}
@@ -3030,36 +3030,15 @@ var plugin = $.ui.plugin = {
 
 
 ( function() {
-var cachedScrollbarWidth, supportsOffsetFractions,
+var cachedScrollbarWidth,
 	max = Math.max,
 	abs = Math.abs,
-	round = Math.round,
 	rhorizontal = /left|center|right/,
 	rvertical = /top|center|bottom/,
 	roffset = /[\+\-]\d+(\.[\d]+)?%?/,
 	rposition = /^\w+/,
 	rpercent = /%$/,
 	_position = $.fn.position;
-
-// Support: IE <=9 only
-supportsOffsetFractions = function() {
-	var element = $( "<div>" )
-			.css( "position", "absolute" )
-			.appendTo( "body" )
-			.offset( {
-				top: 1.5,
-				left: 1.5
-			} ),
-		support = element.offset().top === 1.5;
-
-	element.remove();
-
-	supportsOffsetFractions = function() {
-		return support;
-	};
-
-	return support;
-};
 
 function getOffsets( offsets, width, height ) {
 	return [
@@ -3268,12 +3247,6 @@ $.fn.position = function( options ) {
 
 		position.left += myOffset[ 0 ];
 		position.top += myOffset[ 1 ];
-
-		// If the browser doesn't support fractions, then round for consistent results
-		if ( !supportsOffsetFractions() ) {
-			position.left = round( position.left );
-			position.top = round( position.top );
-		}
 
 		collisionPosition = {
 			marginLeft: marginLeft,
@@ -3873,35 +3846,42 @@ $.widget.bridge = function( name, object ) {
 		var returnValue = this;
 
 		if ( isMethodCall ) {
-			this.each( function() {
-				var methodValue;
-				var instance = $.data( this, fullName );
 
-				if ( options === "instance" ) {
-					returnValue = instance;
-					return false;
-				}
+			// If this is an empty collection, we need to have the instance method
+			// return undefined instead of the jQuery instance
+			if ( !this.length && options === "instance" ) {
+				returnValue = undefined;
+			} else {
+				this.each( function() {
+					var methodValue;
+					var instance = $.data( this, fullName );
 
-				if ( !instance ) {
-					return $.error( "cannot call methods on " + name +
-						" prior to initialization; " +
-						"attempted to call method '" + options + "'" );
-				}
+					if ( options === "instance" ) {
+						returnValue = instance;
+						return false;
+					}
 
-				if ( !$.isFunction( instance[ options ] ) || options.charAt( 0 ) === "_" ) {
-					return $.error( "no such method '" + options + "' for " + name +
-						" widget instance" );
-				}
+					if ( !instance ) {
+						return $.error( "cannot call methods on " + name +
+							" prior to initialization; " +
+							"attempted to call method '" + options + "'" );
+					}
 
-				methodValue = instance[ options ].apply( instance, args );
+					if ( !$.isFunction( instance[ options ] ) || options.charAt( 0 ) === "_" ) {
+						return $.error( "no such method '" + options + "' for " + name +
+							" widget instance" );
+					}
 
-				if ( methodValue !== instance && methodValue !== undefined ) {
-					returnValue = methodValue && methodValue.jquery ?
-						returnValue.pushStack( methodValue.get() ) :
-						methodValue;
-					return false;
-				}
-			} );
+					methodValue = instance[ options ].apply( instance, args );
+
+					if ( methodValue !== instance && methodValue !== undefined ) {
+						returnValue = methodValue && methodValue.jquery ?
+							returnValue.pushStack( methodValue.get() ) :
+							methodValue;
+						return false;
+					}
+				} );
+			}
 		} else {
 
 			// Allow multiple hashes to be passed on init
@@ -4165,6 +4145,10 @@ $.Widget.prototype = {
 			}
 		}
 
+		this._on( options.element, {
+			"remove": "_untrackClassesElement"
+		} );
+
 		if ( options.keys ) {
 			processClassString( options.keys.match( /\S+/g ) || [], true );
 		}
@@ -4173,6 +4157,15 @@ $.Widget.prototype = {
 		}
 
 		return full.join( " " );
+	},
+
+	_untrackClassesElement: function( event ) {
+		var that = this;
+		$.each( that.classesElementLookup, function( key, value ) {
+			if ( $.inArray( event.target, value ) !== -1 ) {
+				that.classesElementLookup[ key ] = $( value.not( event.target ).get() );
+			}
+		} );
 	},
 
 	_removeClass: function( element, keys, extra ) {
@@ -6773,8 +6766,6 @@ $.widget( "ui.draggable", $.ui.mouse, {
 	_mouseCapture: function( event ) {
 		var o = this.options;
 
-		this._blurActiveElement( event );
-
 		// Among others, prevent a drag on a resizable-handle
 		if ( this.helper || o.disabled ||
 				$( event.target ).closest( ".ui-resizable-handle" ).length > 0 ) {
@@ -6786,6 +6777,8 @@ $.widget( "ui.draggable", $.ui.mouse, {
 		if ( !this.handle ) {
 			return false;
 		}
+
+		this._blurActiveElement( event );
 
 		this._blockFrames( o.iframeFix === true ? "iframe" : o.iframeFix );
 
@@ -6817,11 +6810,10 @@ $.widget( "ui.draggable", $.ui.mouse, {
 		var activeElement = $.ui.safeActiveElement( this.document[ 0 ] ),
 			target = $( event.target );
 
-		// Only blur if the event occurred on an element that is:
-		// 1) within the draggable handle
-		// 2) but not within the currently focused element
+		// Don't blur if the event occurred on an element that is within
+		// the currently focused element
 		// See #10527, #12472
-		if ( this._getHandle( event ) && target.closest( activeElement ).length ) {
+		if ( target.closest( activeElement ).length ) {
 			return;
 		}
 
@@ -8108,7 +8100,7 @@ $.widget( "ui.droppable", {
 					inst.accept.call(
 						inst.element[ 0 ], ( draggable.currentItem || draggable.element )
 					) &&
-					intersect(
+					$.ui.intersect(
 						draggable,
 						$.extend( inst, { offset: inst.element.offset() } ),
 						inst.options.tolerance, event
@@ -8162,7 +8154,7 @@ $.widget( "ui.droppable", {
 	}
 } );
 
-var intersect = $.ui.intersect = ( function() {
+$.ui.intersect = ( function() {
 	function isOverAxis( x, reference, size ) {
 		return ( x >= reference ) && ( x < ( reference + size ) );
 	}
@@ -8270,7 +8262,7 @@ $.ui.ddmanager = {
 				return;
 			}
 			if ( !this.options.disabled && this.visible &&
-					intersect( draggable, this, this.options.tolerance, event ) ) {
+					$.ui.intersect( draggable, this, this.options.tolerance, event ) ) {
 				dropped = this._drop.call( this, event ) || dropped;
 			}
 
@@ -8311,7 +8303,7 @@ $.ui.ddmanager = {
 			}
 
 			var parentInstance, scope, parent,
-				intersects = intersect( draggable, this, this.options.tolerance, event ),
+				intersects = $.ui.intersect( draggable, this, this.options.tolerance, event ),
 				c = !intersects && this.isover ?
 					"isout" :
 					( intersects && !this.isover ? "isover" : null );
@@ -8614,6 +8606,9 @@ $.widget( "ui.resizable", $.ui.mouse, {
 		case "handles":
 			this._removeHandles();
 			this._setupHandles();
+			break;
+		case "aspectRatio":
+			this._aspectRatio = !!value;
 			break;
 		default:
 			break;
@@ -10091,17 +10086,21 @@ var widgetsSortable = $.widget( "ui.sortable", $.ui.mouse, {
 				left: event.pageX - this.offset.left,
 				top: event.pageY - this.offset.top
 			},
-			parent: this._getParentOffset(),
 
 			// This is a relative to absolute position minus the actual position calculation -
 			// only used for relative positioned helper
 			relative: this._getRelativeOffset()
 		} );
 
-		// Only after we got the offset, we can change the helper's position to absolute
+		// After we get the helper offset, but before we get the parent offset we can
+		// change the helper's position to absolute
 		// TODO: Still need to figure out a way to make relative sorting possible
 		this.helper.css( "position", "absolute" );
 		this.cssPosition = this.helper.css( "position" );
+
+		$.extend( this.offset, {
+			parent: this._getParentOffset()
+		} );
 
 		//Generate the original position
 		this.originalPosition = this._generatePosition( event );
@@ -10142,18 +10141,21 @@ var widgetsSortable = $.widget( "ui.sortable", $.ui.mouse, {
 				$( "<style>*{ cursor: " + o.cursor + " !important; }</style>" ).appendTo( body );
 		}
 
-		if ( o.opacity ) { // opacity option
-			if ( this.helper.css( "opacity" ) ) {
-				this._storedOpacity = this.helper.css( "opacity" );
-			}
-			this.helper.css( "opacity", o.opacity );
-		}
-
+		// We need to make sure to grab the zIndex before setting the
+		// opacity, because setting the opacity to anything lower than 1
+		// causes the zIndex to change from "auto" to 0.
 		if ( o.zIndex ) { // zIndex option
 			if ( this.helper.css( "zIndex" ) ) {
 				this._storedZIndex = this.helper.css( "zIndex" );
 			}
 			this.helper.css( "zIndex", o.zIndex );
+		}
+
+		if ( o.opacity ) { // opacity option
+			if ( this.helper.css( "opacity" ) ) {
+				this._storedOpacity = this.helper.css( "opacity" );
+			}
+			this.helper.css( "opacity", o.opacity );
 		}
 
 		//Prepare scrolling
@@ -10385,7 +10387,7 @@ var widgetsSortable = $.widget( "ui.sortable", $.ui.mouse, {
 
 		if ( this.dragging ) {
 
-			this._mouseUp( { target: null } );
+			this._mouseUp( new $.Event( "mouseup", { target: null } ) );
 
 			if ( this.options.helper === "original" ) {
 				this.currentItem.css( this._storedCSS );
@@ -10738,20 +10740,20 @@ var widgetsSortable = $.widget( "ui.sortable", $.ui.mouse, {
 
 	_createPlaceholder: function( that ) {
 		that = that || this;
-		var className,
+		var className, nodeName,
 			o = that.options;
 
 		if ( !o.placeholder || o.placeholder.constructor === String ) {
 			className = o.placeholder;
+			nodeName = that.currentItem[ 0 ].nodeName.toLowerCase();
 			o.placeholder = {
 				element: function() {
 
-					var nodeName = that.currentItem[ 0 ].nodeName.toLowerCase(),
-						element = $( "<" + nodeName + ">", that.document[ 0 ] );
+					var element = $( "<" + nodeName + ">", that.document[ 0 ] );
 
-						that._addClass( element, "ui-sortable-placeholder",
-								className || that.currentItem[ 0 ].className )
-							._removeClass( element, "ui-sortable-helper" );
+					that._addClass( element, "ui-sortable-placeholder",
+							className || that.currentItem[ 0 ].className )
+						._removeClass( element, "ui-sortable-helper" );
 
 					if ( nodeName === "tbody" ) {
 						that._createTrPlaceholder(
@@ -10780,9 +10782,15 @@ var widgetsSortable = $.widget( "ui.sortable", $.ui.mouse, {
 						return;
 					}
 
-					//If the element doesn't have a actual height by itself (without styles coming
-					// from a stylesheet), it receives the inline height from the dragged item
-					if ( !p.height() ) {
+					// If the element doesn't have a actual height or width by itself (without
+					// styles coming from a stylesheet), it receives the inline height and width
+					// from the dragged item. Or, if it's a tbody or tr, it's going to have a height
+					// anyway since we're populating them with <td>s above, but they're unlikely to
+					// be the correct height on their own if the row heights are dynamic, so we'll
+					// always assign the height of the dragged item given forcePlaceholderSize
+					// is true.
+					if ( !p.height() || ( o.forcePlaceholderSize &&
+							( nodeName === "tbody" || nodeName === "tr" ) ) ) {
 						p.height(
 							that.currentItem.innerHeight() -
 							parseInt( that.currentItem.css( "paddingTop" ) || 0, 10 ) -
